@@ -702,8 +702,11 @@ class Airflow(BaseView):
             if template_field in attr_renderer:
                 html_dict[template_field] = attr_renderer[template_field](content)
             else:
-                html_dict[template_field] = (
-                    "<pre><code>" + str(content) + "</pre></code>")
+                if isinstance(content, list):
+                    content_str = "\n".join([str(x) for x in content])
+                else:
+                    content_str = str(content)
+                html_dict[template_field] = "<pre><code>" + content_str + "</pre></code>"
 
         return self.render(
             'airflow/ti_code.html',
